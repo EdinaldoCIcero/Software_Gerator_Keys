@@ -55,7 +55,9 @@ class AppClass():
                 [sg.HSeparator()],
                 
                 #---------------------------------------------------------------------------------------
-                [sg.Output(size=(65,20),  background_color=Cores[3] ,key="out") ],
+                [ sg.Canvas(canvas=None, background_color=Cores[2],size=(200, 5)),
+                sg.Multiline(default_text="",autoscroll=False , size=(30,0),background_color="#e0e0e0",text_color=None ,key ="Mult")],
+                #[sg.Output(size=(40,5),  background_color=Cores[3] ,key="out") ],
 
                 [
                 #sg.HSeparator(),
@@ -88,7 +90,8 @@ class AppClass():
             if self.values == sg.WIN_CLOSED or self.values == "Sair":
                 break
 
-
+            if self.events == "down":
+                self.values["Mult"] = "alfagouangowug"
 
 
 
