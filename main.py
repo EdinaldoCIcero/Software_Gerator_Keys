@@ -7,93 +7,115 @@ import string
 import random
 
 
+import Notify as ny 
+import bases_imagens as bimg
 
-sg.theme("DarkGrey3")
+
+
+#sg.theme("DarkGrey3")
+
 
 Cores = [ "#ffffff"  , "#0091ff" , "#242424" , "#ba4747" ]
+background_image= bimg.back_fundo_base64
 
+
+
+def title_bar(title, text_color, background_color):
+    bc = background_color
+    tc = text_color
+    font = 'Helvetica 12'
+
+    return [sg.Col([[sg.T(title, text_color=tc, background_color=bc, font=font, grab=True)]], pad=(0, 0), background_color=bc),
+
+            sg.Col([[sg.T('_', text_color=tc, background_color=bc, enable_events=True, font=font, key='-MINIMIZE-'),
+
+            sg.Text('❎', text_color=tc, background_color=bc, font=font, enable_events=True, key='Exit')]], 
+                    element_justification='r', key='-C-', grab=True,pad=(0, 0), background_color=bc)]
 
 
 class AppClass():
-    def __init__(self):
+    def __init__(self , background_image ):
+
+        sg.Window._move_all_windows = True
 
         self.list_senha = []
         self.list_senha_for_save = []
 
+        self.background_layout = [ title_bar('RandomPassaworld_1234', Cores[1], Cores[2] ),[sg.Image(data=background_image)] ]
+
+        self.window_background = sg.Window('Background', self.background_layout, no_titlebar=True, finalize=True, margins=(0, 0),element_padding=(0,0) ,size=(720,480) ,right_click_menu=[[''], ['Exit',]])
+
+        self.window_background['-C-'].expand(True, False, False)  
+
+
 
         self.lay = [
                 #---------------------------------------------------------------------------------------
-                #[sg.Image(filename = None,size = (720, 160))]
-                [sg.Canvas(canvas=None, background_color=Cores[0],size=(720, 160)) ,],
+                [sg.Canvas(canvas=None, background_color=sg.theme_background_color(),size=(10, 50)) ,],
+                [sg.Image(filename ="img/logosoft.png",size = (720, 105))],
+                
                 #---------------------------------------------------------------------------------------
                 [
-                sg.Text("URL do video",text_color=Cores[3] , size=( 10 , 1))
-                ],
-
-                #---------------------------------------------------------------------------------------
-                [sg.HorizontalSeparator(color=Cores[3],key="separador002")],
-
-                #---------------------------------------------------------------------------------------
-                [
-                sg.Canvas(canvas=None, background_color=Cores[2],size=(50, 5)),
-                sg.Slider(range = (0, 100),size=(60 , 10) , default_value = 0 ,orientation="horizontal" , key="sizekey")
+                sg.Canvas(canvas=None, background_color=sg.theme_background_color(),size=(180, 5)),
+                sg.Text("Arraste no slider para definir o tamnho da sua senha .",text_color=Cores[0] , size=( 50 , 1))
                 ],
 
                 #---------------------------------------------------------------------------------------
                 [sg.HSeparator()],
-                
-                #---------------------------------------------------------------------------------------
-                [sg.Canvas(canvas=None, background_color=Cores[2],size=(10, 20))],
 
                 #---------------------------------------------------------------------------------------
                 [
-                sg.Canvas(canvas=None, background_color=Cores[2],size=(178, 5)),
-                sg.Button("gerar senha ", button_color=None, key="down", size=(30,1))
+                sg.Canvas(canvas=None, background_color=sg.theme_background_color(),size=(80, 5)),
+                sg.Slider(range = (0, 100),size=(60 , 10) , default_value = 0 ,orientation="horizontal" , key="sizekey")
+                ],
+  
+                #---------------------------------------------------------------------------------------
+                [sg.Canvas(canvas=None, background_color=sg.theme_background_color(),size=(10, 20))],
+
+                #---------------------------------------------------------------------------------------
+                [
+                sg.Canvas(canvas=None, background_color=sg.theme_background_color(),size=(210, 5)),
+                sg.Button("", button_color=(sg.theme_background_color(),sg.theme_background_color() ), border_width=0,key="down", size=(30,1) , image_data=bimg.g_senha  )
                 ],
 
                 #---------------------------------------------------------------------------------------
-                [sg.Canvas(canvas=None, background_color=Cores[2],size=(10, 20))],
+                [sg.Canvas(canvas=None, background_color=sg.theme_background_color(),size=(10, 20))],
 
                 #---------------------------------------------------------------------------------------
                 [ 
-                sg.Canvas(canvas=None, background_color=Cores[2],size=(170, 5)) ,
+                sg.Canvas(canvas=None, background_color=sg.theme_background_color(),size=(200, 5)) ,
                 sg.InputText(size=(40,2) , background_color="#e0e0e0", pad=(0 ,(0 , 10 )) , key="saida")
                 ],
 
                 #---------------------------------------------------------------------------------------
-
-                [sg.Canvas(canvas=None, background_color=Cores[2],size=(100, 42))],
+                [sg.Canvas(canvas=None, background_color=sg.theme_background_color(),size=(100, 42))],
                 [sg.HSeparator()],
+
                 #---------------------------------------------------------------------------------------
                 [
-                sg.Canvas(canvas=None, background_color=Cores[2],size=(500, 2)),
-                #sg.FolderBrowse("Buscar" , key="path") ,
-                sg.Button("salvar senha", button_color=None, key="save", size=(21,1))
+                sg.Canvas(canvas=None, background_color=sg.theme_background_color(),size=(500, 2)),
+                sg.Button("", image_data=bimg.salvar_senha , button_color=(sg.theme_background_color(),sg.theme_background_color() ), border_width=0, key="save", size=(21,1)) 
                 ],
 
+                #---------------------------------------------------------------------------------------
                 [
-                sg.Canvas(canvas=None, background_color=Cores[2],size=(200, 2)),
+                sg.Canvas(canvas=None, background_color=sg.theme_background_color(),size=(200, 80)),
                 sg.Text("criado por:EdinaldoCicero/Átomos Games Studios",auto_size_text= 2 , text_color=Cores[0] ,size=(30,1),s=(1,1))]
                 ]
 
 
-        self.layout = [
-                    [self.lay],
-
-                    ]
+        self.layout = [ [self.lay] ]
 
 
-        self.janela = sg.Window("Gerator_Keys",background_color=None , size=(720,480)).layout(self.layout)
-
-        pass
-
+        self.janela = sg.Window('Gerator_Keys', self.layout,finalize=True, keep_on_top=True, grab_anywhere=False,  transparent_color=sg.theme_background_color(), no_titlebar=True)
 
 
     def Update(self):
+        LINES = ("--"*20)
+
         while True:
-            self.events, self.values = self.janela.Read()
-            LINES = ("--"*20)
-            if self.values == sg.WIN_CLOSED or self.values == "Sair":
+            self.window, self.events, self.values = sg.read_all_windows()
+            if self.events is None or self.events == 'Cancel' or self.events == 'Exit':
                 break
 
             if self.events == "down":
@@ -104,12 +126,21 @@ class AppClass():
 
             if self.events == "save":
                 self.list_senha.append(self.values["saida"])
-
                 with open( "senha_gerada.txt" , "w" ) as openedfile:
                     openedfile.write( LINES + "\n" + "SENHA CRAIDA : " + self.list_senha[0] + "\n" + LINES )
-                    #print( self.list_senha )
                     self.list_senha = []
 
+                nnn = ny.Noti( titulo="SENHA_SALVA" , mensagen="Sua senha foi salva com sussesso!" )
 
-app = AppClass()
-app.Update()
+
+
+
+        self.janela.close()
+        self.window_background.close()
+
+
+if __name__ == '__main__':
+    
+    app = AppClass(background_image)
+
+    app.Update()
